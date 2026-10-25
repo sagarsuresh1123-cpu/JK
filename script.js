@@ -33,7 +33,14 @@ function iconFor(category,name){
   if(/soap|clean|detergent/.test(n)) return "🧴";
   return "🧺";
 }
-function visualFor(p){return `<div class="product-visual"><span class="visual-icon">${esc(iconFor(p.category,p.name))}</span></div>`;}
+function visualFor(p){
+  const src = String(p.icon||"").trim();
+  if(src.startsWith("http")){
+    return `<div class="product-visual" style="padding:0;overflow:hidden;background:#fff"><img src="${esc(src)}" alt="${esc(p.name)}" loading="lazy" style="width:100%;height:100%;object-fit:contain;display:block" onerror="this.parentElement.innerHTML='<span class="visual-icon">🧺</span>'"></div>`;
+  }
+  if(src === "") return `<div class="product-visual" style="background:#f7f7f7"></div>`;
+  return `<div class="product-visual"><span class="visual-icon">${esc(iconFor(p.category,p.name))}</span></div>`;
+}
 function saveCart(){localStorage.setItem("jk_cart_v2", JSON.stringify(cart));}
 function cartEntries(){return Object.values(cart).map(x=>({...x, product:products.find(p=>String(p.id)===String(x.id)) || x.product})).filter(x=>x.product);}
 function cartCount(){return cartEntries().reduce((s,x)=>s+x.qty,0);}
