@@ -6,6 +6,7 @@ const FALLBACK_CATEGORIES = [
 ];
 
 const WHATSAPP = "919880079461";
+
 let client = null;
 let products = [];
 let cart = JSON.parse(localStorage.getItem("jk_cart_v2") || "{}") || {};
@@ -14,21 +15,19 @@ let fulfilment = "delivery";
 
 const $ = id => document.getElementById(id);
 
-const money = n =>
-  new Intl.NumberFormat("en-IN", {
-    style:"currency",
-    currency:"INR",
-    maximumFractionDigits:2
-  }).format(Number(n||0));
+const money = n => new Intl.NumberFormat("en-IN", {
+  style:"currency",
+  currency:"INR",
+  maximumFractionDigits:2
+}).format(Number(n||0));
 
-const esc = s =>
-  String(s ?? "").replace(/[&<>'"]/g, c => ({
-    "&":"&amp;",
-    "<":"&lt;",
-    ">":"&gt;",
-    "'":"&#39;",
-    "\"":"&quot;"
-  }[c]));
+const esc = s => String(s ?? "").replace(/[&<>'"]/g, c => ({
+  "&":"&amp;",
+  "<":"&lt;",
+  ">":"&gt;",
+  "'":"&#39;",
+  "\"":"&quot;"
+}[c]));
 
 function normalizeProduct(p){
   return {
@@ -62,241 +61,119 @@ function iconFor(category,name){
   return "🧺";
 }
 
+
 /*
-  Creates a self-contained product illustration.
-  This does NOT depend on LoremFlickr or any external image service.
-*/
-function autoProductImage(p){
+ * REAL PRODUCT IMAGE HANDLER
+ *
+ * IMPORTANT:
+ * - No generated/fake packaging.
+ * - No LoremFlickr.
+ * - No generic SVG product images.
+ * - If we don't have a verified product photo, the image stays blank.
+ *
+ * We can keep adding exact product images to IMAGE_OVERRIDES.
+ */
 
-  const name = String(p.name || "Grocery").trim();
-  const size = String(p.size || "As listed").trim();
-  const cat = String(p.category || "Grocery").trim();
+const IMAGE_OVERRIDES = {
 
-  const title = name.slice(0,30);
+  "AASHIRVAAD 1KG":
+    "https://www.indimarkt.de/cdn/shop/files/rn-image_picker_lib_temp_0cc0284b-b514-464d-acbd-59fc97c6edd7.jpg?v=1755944351",
 
-  const safe = s =>
-    String(s)
-      .replace(/&/g,"&amp;")
-      .replace(/</g,"&lt;")
-      .replace(/>/g,"&gt;")
-      .replace(/"/g,"&quot;");
+  "AACHI SAMBER 100G":
+    "https://aachifoods.com/cdn/shop/files/idicha-sambar-powder.webp?v=1755757505",
 
-  const svg = `
-  <svg xmlns="http://www.w3.org/2000/svg"
-       width="600"
-       height="600"
-       viewBox="0 0 600 600">
+  "ACT 2":
+    "https://cdn.grofers.com/da/cms-assets/cms/product/rc-upload-1773909116319-1338.jpg",
 
-    <rect
-      width="600"
-      height="600"
-      rx="34"
-      fill="#f7f1e8"/>
+  "DURACELL AA":
+    "https://lntsufin.com/storage/mediafiles/catalog/live/17121-3810/original/17121-3810_image_0.jpg",
 
-    <ellipse
-      cx="300"
-      cy="500"
-      rx="185"
-      ry="26"
-      fill="#ded5c8"/>
+  "7OCLOCK P2 RAZAR":
+    "https://www.jiomart.com/images/product/original/13840/gillette-7-o-clock-pii-razor-prod-13840-0-202402011746.jpg?im=Resize%3D%28600%2C600%29",
 
-    <rect
-      x="155"
-      y="88"
-      width="290"
-      height="360"
-      rx="18"
-      fill="#ffffff"
-      stroke="#d8c7b4"
-      stroke-width="4"/>
+  "5STAR 5/":
+    "https://tiimg.tistatic.com/fp/1/007/569/anti-oxidants-pure-healthy-delicious-sweet-cadbury-5-star-chocolate-296.jpg",
 
-    <rect
-      x="155"
-      y="88"
-      width="290"
-      height="82"
-      rx="18"
-      fill="#c75e35"/>
+  "COLGATE":
+    "https://imgwlns.gumlet.io/images/products/202944-1.jpg",
 
-    <rect
-      x="155"
-      y="150"
-      width="290"
-      height="20"
-      fill="#c75e35"/>
+  "MAGGI":
+    "https://img06.weeecdn.com/product/image/713/344/CA3191B90F3544A.png"
 
-    <text
-      x="300"
-      y="125"
-      text-anchor="middle"
-      font-family="Arial,sans-serif"
-      font-size="25"
-      font-weight="700"
-      fill="#ffffff">
-      ${safe(cat.slice(0,24))}
-    </text>
+};
 
-    <circle
-      cx="300"
-      cy="255"
-      r="65"
-      fill="#c75e35"
-      opacity=".12"/>
 
-    <path
-      d="M245 285 Q300 205 355 285
-         M270 290 L270 325
-         M300 270 L300 325
-         M330 290 L330 325"
-      fill="none"
-      stroke="#c75e35"
-      stroke-width="12"
-      stroke-linecap="round"
-      stroke-linejoin="round"/>
-
-    <text
-      x="300"
-      y="375"
-      text-anchor="middle"
-      font-family="Arial,sans-serif"
-      font-size="24"
-      font-weight="700"
-      fill="#332a24">
-      ${safe(title)}
-    </text>
-
-    <text
-      x="300"
-      y="408"
-      text-anchor="middle"
-      font-family="Arial,sans-serif"
-      font-size="19"
-      fill="#6b5b4f">
-      ${safe(size)}
-    </text>
-
-    <rect
-      x="225"
-      y="430"
-      width="150"
-      height="3"
-      rx="2"
-      fill="#d8c7b4"/>
-
-    <text
-      x="300"
-      y="550"
-      text-anchor="middle"
-      font-family="Arial,sans-serif"
-      font-size="15"
-      fill="#8d7b6b">
-      JK TRADERS • PRODUCT IMAGE
-    </text>
-
-  </svg>`;
-
-  return "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(svg);
+function imageKey(name){
+  return String(name || "")
+    .trim()
+    .toUpperCase()
+    .replace(/\s+/g, " ");
 }
 
 
-/*
-  IMAGE HANDLING
+function verifiedImageFor(p){
 
-  - Blank icon = intentionally blank
-  - "auto" = generated local product image
-  - LoremFlickr = automatically replaced by generated local image
-  - Other valid URLs = displayed normally
-  - Broken URLs = automatically replaced by generated local image
-*/
-function visualFor(p){
-
-  const src = String(p.icon || "").trim();
+  const dbIcon = String(p.icon || "").trim();
 
   /*
-    These are the 290 products we intentionally left blank.
-  */
-  if(src === ""){
-    return `
-      <div
-        class="product-visual"
-        style="background:#f7f7f7">
-      </div>`;
-  }
-
-  /*
-    Automatically replace old LoremFlickr images.
-  */
+   * If Supabase already contains a real image URL,
+   * use that image.
+   *
+   * Ignore old LoremFlickr URLs.
+   */
   if(
-    src === "auto" ||
-    src.includes("loremflickr.com") ||
-    src.includes("loremflickr.")
+    /^https?:\/\//i.test(dbIcon) &&
+    !/loremflickr/i.test(dbIcon)
   ){
-
-    const img = autoProductImage(p);
-
-    return `
-      <div
-        class="product-visual"
-        style="padding:0;overflow:hidden;background:#fff">
-
-        <img
-          src="${img}"
-          alt="${esc(p.name)}"
-          loading="lazy"
-          style="
-            width:100%;
-            height:100%;
-            object-fit:contain;
-            display:block;
-          ">
-      </div>`;
+    return dbIcon;
   }
 
   /*
-    Future real images.
-  */
-  if(
-    src.startsWith("http") ||
-    src.startsWith("data:image/")
-  ){
+   * Ignore the old "auto" marker and LoremFlickr placeholders.
+   * Use only our verified image mapping.
+   */
+  return IMAGE_OVERRIDES[imageKey(p.name)] || "";
+}
 
-    const fallback = autoProductImage(p);
 
-    return `
-      <div
-        class="product-visual"
-        style="padding:0;overflow:hidden;background:#fff">
-
-        <img
-          src="${esc(src)}"
-          alt="${esc(p.name)}"
-          loading="lazy"
-          style="
-            width:100%;
-            height:100%;
-            object-fit:contain;
-            display:block;
-          "
-          onerror="
-            this.onerror=null;
-            this.src='${fallback}';
-          ">
-      </div>`;
-  }
-
-  /*
-    Anything else gets a clean generated image,
-    rather than the old basket emoji.
-  */
-  const img = autoProductImage(p);
+function blankVisual(){
 
   return `
     <div
       class="product-visual"
-      style="padding:0;overflow:hidden;background:#fff">
+      style="background:#f7f7f7">
+    </div>
+  `;
+
+}
+
+
+function visualFor(p){
+
+  const src = verifiedImageFor(p);
+
+  /*
+   * No verified image = blank.
+   */
+  if(!src){
+    return blankVisual();
+  }
+
+  /*
+   * Real image.
+   */
+  return `
+    <div
+      class="product-visual"
+      style="
+        padding:0;
+        overflow:hidden;
+        background:#fff;
+      "
+    >
 
       <img
-        src="${img}"
+        src="${esc(src)}"
         alt="${esc(p.name)}"
         loading="lazy"
         style="
@@ -304,36 +181,55 @@ function visualFor(p){
           height:100%;
           object-fit:contain;
           display:block;
-        ">
-    </div>`;
+        "
+        onerror="
+          this.closest('.product-visual').innerHTML=
+          '<div style=&quot;width:100%;height:100%;background:#f7f7f7&quot;></div>'
+        "
+      >
+
+    </div>
+  `;
 }
 
 
 function saveCart(){
-  localStorage.setItem("jk_cart_v2", JSON.stringify(cart));
+  localStorage.setItem(
+    "jk_cart_v2",
+    JSON.stringify(cart)
+  );
 }
 
+
 function cartEntries(){
+
   return Object.values(cart)
     .map(x => ({
       ...x,
-      product:products.find(
-        p => String(p.id) === String(x.id)
-      ) || x.product
+      product:
+        products.find(
+          p => String(p.id) === String(x.id)
+        ) || x.product
     }))
     .filter(x => x.product);
+
 }
+
 
 function cartCount(){
-  return cartEntries().reduce((s,x)=>s+x.qty,0);
+  return cartEntries()
+    .reduce((s,x) => s + x.qty, 0);
 }
 
+
 function cartTotal(){
-  return cartEntries().reduce(
-    (s,x)=>
-      s + (Number(x.product.price)||0) * x.qty,
-    0
-  );
+  return cartEntries()
+    .reduce(
+      (s,x) =>
+        s +
+        (Number(x.product.price) || 0) * x.qty,
+      0
+    );
 }
 
 
@@ -362,7 +258,8 @@ async function loadProducts(){
 
     if(error) throw error;
 
-    products = (data||[]).map(normalizeProduct);
+    products = (data || [])
+      .map(normalizeProduct);
 
   }catch(e){
 
@@ -373,8 +270,8 @@ async function loadProducts(){
     $("productGrid").innerHTML = `
       <div
         class="empty-state"
-        style="grid-column:1/-1">
-
+        style="grid-column:1/-1"
+      >
         <div>⚠️</div>
 
         <h2>
@@ -389,7 +286,8 @@ async function loadProducts(){
           or try again in a moment.
         </p>
 
-      </div>`;
+      </div>
+    `;
 
     $("resultMeta").textContent =
       "Unable to load live catalogue";
@@ -401,32 +299,34 @@ async function loadProducts(){
   renderProducts();
   renderPopular();
   renderCart();
+
 }
 
 
 function categories(){
 
-  const names = [
-    ...new Set(
+  const names =
+    [...new Set(
       products
-        .map(p=>p.category)
+        .map(p => p.category)
         .filter(Boolean)
-    )
-  ];
+    )];
 
   const ordered =
     FALLBACK_CATEGORIES
-      .map(x=>x[0])
-      .filter(x=>names.includes(x));
+      .map(x => x[0])
+      .filter(x => names.includes(x));
 
-  names.forEach(n=>{
-    if(!ordered.includes(n))
+  names.forEach(n => {
+    if(!ordered.includes(n)){
       ordered.push(n);
+    }
   });
 
   return ordered.length
     ? ordered
-    : FALLBACK_CATEGORIES.map(x=>x[0]);
+    : FALLBACK_CATEGORIES.map(x => x[0]);
+
 }
 
 
@@ -434,10 +334,10 @@ function catIcon(name){
 
   return (
     FALLBACK_CATEGORIES.find(
-      x=>x[0]===name
-    ) ||
-    ["","🧺"]
+      x => x[0] === name
+    ) || ["","🧺"]
   )[1];
+
 }
 
 
@@ -447,10 +347,15 @@ function renderCategories(){
 
   $("categoryTiles").innerHTML =
     cats.slice(0,8)
-      .map(c=>`
+      .map(c => `
         <button
-          class="category-tile ${selectedCategory===c?"active":""}"
-          data-category="${esc(c)}">
+          class="category-tile ${
+            selectedCategory === c
+              ? "active"
+              : ""
+          }"
+          data-category="${esc(c)}"
+        >
 
           <span class="category-icon">
             ${catIcon(c)}
@@ -464,40 +369,66 @@ function renderCategories(){
       `)
       .join("");
 
+
   $("categoryList").innerHTML =
-    `<button
-      class="${selectedCategory==="All"?"active":""}"
-      data-category="All">
+    `
+      <button
+        class="${
+          selectedCategory === "All"
+            ? "active"
+            : ""
+        }"
+        data-category="All"
+      >
 
-      <span class="cat-icon">🛍️</span>
-      <span>All products</span>
+        <span class="cat-icon">
+          🛍️
+        </span>
 
-    </button>` +
+        <span>
+          All products
+        </span>
 
-    cats
-      .map(c=>`
-        <button
-          class="${selectedCategory===c?"active":""}"
-          data-category="${esc(c)}">
+      </button>
+    `
 
-          <span class="cat-icon">
-            ${catIcon(c)}
-          </span>
+    +
 
-          <span>${esc(c)}</span>
+    cats.map(c => `
+      <button
+        class="${
+          selectedCategory === c
+            ? "active"
+            : ""
+        }"
+        data-category="${esc(c)}"
+      >
 
-        </button>
-      `)
-      .join("");
+        <span class="cat-icon">
+          ${catIcon(c)}
+        </span>
+
+        <span>
+          ${esc(c)}
+        </span>
+
+      </button>
+    `)
+    .join("");
+
 
   document
     .querySelectorAll("[data-category]")
-    .forEach(b=>
+    .forEach(b =>
       b.addEventListener(
         "click",
-        ()=>selectCategory(b.dataset.category)
+        () =>
+          selectCategory(
+            b.dataset.category
+          )
       )
     );
+
 }
 
 
@@ -510,63 +441,94 @@ function selectCategory(cat){
   closeCategories();
 
   window.scrollTo({
-    top:document.querySelector(".shop-shell").offsetTop-70,
+    top:
+      document
+        .querySelector(".shop-shell")
+        .offsetTop - 70,
     behavior:"smooth"
   });
+
 }
 
 
 function filteredProducts(){
 
   const q =
-    $("search").value
+    $("search")
+      .value
       .trim()
       .toLowerCase();
 
   let list =
-    products.filter(p =>
-      (selectedCategory==="All" ||
-       p.category===selectedCategory) &&
-
-      (!q ||
-       `${p.name} ${p.category} ${p.size}`
-        .toLowerCase()
-        .includes(q))
+    products.filter(
+      p =>
+        (
+          selectedCategory === "All" ||
+          p.category === selectedCategory
+        )
+        &&
+        (
+          !q ||
+          `${p.name} ${p.category} ${p.size}`
+            .toLowerCase()
+            .includes(q)
+        )
     );
 
-  const sort = $("sortSelect").value;
 
-  if(sort==="name")
-    list.sort((a,b)=>a.name.localeCompare(b.name));
+  const sort =
+    $("sortSelect").value;
 
-  if(sort==="price-low")
-    list.sort((a,b)=>a.price-b.price);
+  if(sort === "name"){
+    list.sort(
+      (a,b) =>
+        a.name.localeCompare(b.name)
+    );
+  }
 
-  if(sort==="price-high")
-    list.sort((a,b)=>b.price-a.price);
+  if(sort === "price-low"){
+    list.sort(
+      (a,b) =>
+        a.price - b.price
+    );
+  }
+
+  if(sort === "price-high"){
+    list.sort(
+      (a,b) =>
+        b.price - a.price
+    );
+  }
 
   return list;
+
 }
 
 
 function inCart(id){
+
   return cart[String(id)]?.qty || 0;
+
 }
 
 
 function productCard(p){
 
-  const qty = inCart(p.id);
+  const qty =
+    inCart(p.id);
 
   const old =
-    p.price>0
-      ? p.price*1.15
+    p.price > 0
+      ? p.price * 1.15
       : 0;
 
   const discount =
-    old>p.price
-      ? Math.round((1-p.price/old)*100)
+    old > p.price
+      ? Math.round(
+          (1 - p.price / old) * 100
+        )
       : 0;
+
 
   return `
     <article class="product-card">
@@ -576,20 +538,24 @@ function productCard(p){
         ${visualFor(p)}
 
         ${
-          discount>=8
-            ? `<span class="product-badge">
-                 ${discount}% OFF
-               </span>`
+          discount >= 8
+            ? `
+              <span class="product-badge">
+                ${discount}% OFF
+              </span>
+            `
             : ""
         }
 
         <button
           class="heart"
-          aria-label="Save ${esc(p.name)}">
+          aria-label="Save ${esc(p.name)}"
+        >
           ♡
         </button>
 
       </div>
+
 
       <div class="product-body">
 
@@ -601,15 +567,16 @@ function productCard(p){
           ${esc(p.name)}
         </div>
 
+
         <select
           class="size-select"
-          aria-label="Choose size for ${esc(p.name)}">
-
+          aria-label="Choose size for ${esc(p.name)}"
+        >
           <option>
             ${esc(p.size)}
           </option>
-
         </select>
+
 
         <div class="price-row">
 
@@ -618,51 +585,65 @@ function productCard(p){
           </span>
 
           ${
-            old>p.price
-              ? `<span class="old-price">
-                   ${money(old)}
-                 </span>`
+            old > p.price
+              ? `
+                <span class="old-price">
+                  ${money(old)}
+                </span>
+              `
               : ""
           }
 
           ${
-            discount>=8
-              ? `<span class="discount">
-                   ${discount}% OFF
-                 </span>`
+            discount >= 8
+              ? `
+                <span class="discount">
+                  ${discount}% OFF
+                </span>
+              `
               : ""
           }
 
         </div>
 
+
         <div class="add-row">
 
           ${
             qty
+
               ? `
                 <div class="qty-control">
 
                   <button
                     data-action="dec"
-                    data-id="${p.id}">
+                    data-id="${p.id}"
+                  >
                     −
                   </button>
 
-                  <span>${qty}</span>
+                  <span>
+                    ${qty}
+                  </span>
 
                   <button
                     data-action="inc"
-                    data-id="${p.id}">
+                    data-id="${p.id}"
+                  >
                     +
                   </button>
 
                 </div>
               `
-              : `
+
+              :
+
+              `
                 <button
                   class="add-btn"
                   data-action="add"
-                  data-id="${p.id}">
+                  data-id="${p.id}"
+                >
                   ＋ Add
                 </button>
               `
@@ -672,51 +653,76 @@ function productCard(p){
 
       </div>
 
-    </article>`;
+    </article>
+  `;
+
 }
 
 
 function renderProducts(){
 
-  const list = filteredProducts();
+  const list =
+    filteredProducts();
 
   $("pageTitle").textContent =
-    selectedCategory==="All"
+    selectedCategory === "All"
+
       ? (
           $("search").value
             ? "Search results"
             : "Shop groceries"
         )
+
       : selectedCategory;
 
+
   $("resultMeta").textContent =
-    `${list.length} product${list.length===1?"":"s"}`;
+    `${list.length} product${
+      list.length === 1
+        ? ""
+        : "s"
+    }`;
+
 
   $("productGrid").innerHTML =
-    list.map(productCard).join("");
+    list
+      .map(productCard)
+      .join("");
+
 
   $("emptyState").hidden =
     !!list.length;
 
+
   document
     .querySelectorAll("[data-action]")
-    .forEach(b=>
-      b.addEventListener("click",()=>{
+    .forEach(b =>
+      b.addEventListener(
+        "click",
+        () => {
 
-        const id = b.dataset.id;
-        const action = b.dataset.action;
+          const id =
+            b.dataset.id;
 
-        if(action==="add")
-          addToCart(id,1);
+          const action =
+            b.dataset.action;
 
-        if(action==="inc")
-          addToCart(id,1);
+          if(action === "add"){
+            addToCart(id,1);
+          }
 
-        if(action==="dec")
-          addToCart(id,-1);
+          if(action === "inc"){
+            addToCart(id,1);
+          }
 
-      })
+          if(action === "dec"){
+            addToCart(id,-1);
+          }
+
+        }
+      )
     );
+
 }
 
 
@@ -724,16 +730,21 @@ function renderPopular(){
 
   const list =
     [...products]
-      .sort((a,b)=>Number(b.price)-Number(a.price))
+      .sort(
+        (a,b) =>
+          Number(b.price) -
+          Number(a.price)
+      )
       .slice(0,8);
+
 
   $("popularGrid").innerHTML =
     list
-      .map(p=>`
+      .map(p => `
         <article class="mini-card">
 
           <div class="mini-visual">
-            ${esc(iconFor(p.category,p.name))}
+            ${visualFor(p)}
           </div>
 
           <div>
@@ -748,14 +759,13 @@ function renderPopular(){
 
             <button
               class="mini-add"
-              data-mini-id="${p.id}">
-
+              data-mini-id="${p.id}"
+            >
               ${
                 inCart(p.id)
                   ? "Add more"
                   : "＋ Add"
               }
-
             </button>
 
           </div>
@@ -764,17 +774,20 @@ function renderPopular(){
       `)
       .join("");
 
+
   document
     .querySelectorAll("[data-mini-id]")
-    .forEach(b=>
+    .forEach(b =>
       b.addEventListener(
         "click",
-        ()=>addToCart(
-          b.dataset.miniId,
-          1
-        )
+        () =>
+          addToCart(
+            b.dataset.miniId,
+            1
+          )
       )
     );
+
 }
 
 
@@ -782,24 +795,35 @@ function addToCart(id,delta){
 
   const p =
     products.find(
-      x=>String(x.id)===String(id)
+      x =>
+        String(x.id) ===
+        String(id)
     );
 
   if(!p) return;
 
-  const key = String(id);
+  const key =
+    String(id);
 
   const next =
-    (cart[key]?.qty||0) + delta;
+    (cart[key]?.qty || 0) +
+    delta;
 
-  if(next<=0)
+
+  if(next <= 0){
+
     delete cart[key];
-  else
+
+  }else{
+
     cart[key] = {
       id:p.id,
       qty:next,
       product:p
     };
+
+  }
+
 
   saveCart();
 
@@ -807,29 +831,48 @@ function addToCart(id,delta){
   renderPopular();
   renderCart();
 
-  if(delta>0 && cartCount()===1)
+
+  if(
+    delta > 0 &&
+    cartCount() === 1
+  ){
     openCart();
+  }
+
 }
 
 
 function renderCart(){
 
-  const entries = cartEntries();
-  const count = cartCount();
-  const total = cartTotal();
+  const entries =
+    cartEntries();
 
-  $("cartCount").textContent = count;
+  const count =
+    cartCount();
 
-  $("mobileBottomCount").textContent = count;
+  const total =
+    cartTotal();
+
+
+  $("cartCount").textContent =
+    count;
+
+  $("mobileBottomCount").textContent =
+    count;
 
   $("mobileBottomTotal").textContent =
     money(total);
 
   $("cartSubhead").textContent =
-    `${count} item${count===1?"":"s"}`;
+    `${count} item${
+      count === 1
+        ? ""
+        : "s"
+    }`;
 
   $("cartTotal").textContent =
     money(total);
+
 
   if(!entries.length){
 
@@ -838,10 +881,13 @@ function renderCart(){
         class="empty-state"
         style="
           border:0;
-          padding:55px 15px;
-        ">
+          padding:55px 15px
+        "
+      >
 
-        <div>🛒</div>
+        <div>
+          🛒
+        </div>
 
         <h2>
           Your cart is empty
@@ -851,25 +897,23 @@ function renderCart(){
           Add products and they'll appear here.
         </p>
 
-      </div>`;
+      </div>
+    `;
 
-    $("deliveryProgress").innerHTML = "";
+    $("deliveryProgress").innerHTML =
+      "";
 
     return;
   }
 
+
   $("cartItems").innerHTML =
     entries
-      .map(x=>`
+      .map(x => `
         <div class="cart-item">
 
           <div class="cart-item-visual">
-            ${esc(
-              iconFor(
-                x.product.category,
-                x.product.name
-              )
-            )}
+            ${visualFor(x.product)}
           </div>
 
           <div>
@@ -889,7 +933,8 @@ function renderCart(){
             <div class="cart-qty">
 
               <button
-                data-cart-dec="${x.product.id}">
+                data-cart-dec="${x.product.id}"
+              >
                 −
               </button>
 
@@ -898,7 +943,8 @@ function renderCart(){
               </span>
 
               <button
-                data-cart-inc="${x.product.id}">
+                data-cart-inc="${x.product.id}"
+              >
                 +
               </button>
 
@@ -906,10 +952,12 @@ function renderCart(){
 
           </div>
 
+
           <button
             class="cart-remove"
             data-cart-remove="${x.product.id}"
-            aria-label="Remove">
+            aria-label="Remove"
+          >
             ♧
           </button>
 
@@ -917,20 +965,22 @@ function renderCart(){
       `)
       .join("");
 
+
   const remaining =
     Math.max(
       0,
-      2000-total
+      2000 - total
     );
 
   const pct =
     Math.min(
       100,
-      total/2000*100
+      total / 2000 * 100
     );
 
+
   $("deliveryProgress").innerHTML =
-    total>=2000
+    total >= 2000
 
       ? `
         <b>
@@ -938,17 +988,24 @@ function renderCart(){
         </b>
 
         <div class="progress-line">
-          <span style="width:100%"></span>
+          <span
+            style="width:100%"
+          ></span>
         </div>
       `
 
-      : `
+      :
+
+      `
         <b>
-          Add ${money(remaining)} more for delivery
+          Add ${money(remaining)}
+          more for delivery
         </b>
 
         <div class="progress-line">
-          <span style="width:${pct}%"></span>
+          <span
+            style="width:${pct}%"
+          ></span>
         </div>
 
         <small>
@@ -956,30 +1013,33 @@ function renderCart(){
         </small>
       `;
 
+
   document
     .querySelectorAll("[data-cart-inc]")
-    .forEach(b=>
-      b.onclick=()=>
+    .forEach(b =>
+      b.onclick = () =>
         addToCart(
           b.dataset.cartInc,
           1
         )
     );
 
+
   document
     .querySelectorAll("[data-cart-dec]")
-    .forEach(b=>
-      b.onclick=()=>
+    .forEach(b =>
+      b.onclick = () =>
         addToCart(
           b.dataset.cartDec,
           -1
         )
     );
 
+
   document
     .querySelectorAll("[data-cart-remove]")
-    .forEach(b=>
-      b.onclick=()=>{
+    .forEach(b =>
+      b.onclick = () => {
 
         delete cart[
           String(
@@ -992,8 +1052,10 @@ function renderCart(){
         renderProducts();
         renderPopular();
         renderCart();
+
       }
     );
+
 }
 
 
@@ -1009,7 +1071,10 @@ function openCart(){
     );
 
   document.body
-    .classList.add("drawer-open");
+    .classList.add(
+      "drawer-open"
+    );
+
 }
 
 
@@ -1025,7 +1090,10 @@ function closeCart(){
     );
 
   document.body
-    .classList.remove("drawer-open");
+    .classList.remove(
+      "drawer-open"
+    );
+
 }
 
 
@@ -1037,7 +1105,10 @@ function openCategories(){
     .classList.add("open");
 
   document.body
-    .classList.add("modal-open");
+    .classList.add(
+      "modal-open"
+    );
+
 }
 
 
@@ -1047,70 +1118,95 @@ function closeCategories(){
     .classList.remove("open");
 
   document.body
-    .classList.remove("modal-open");
+    .classList.remove(
+      "modal-open"
+    );
+
 }
 
 
 function sendWhatsApp(){
 
-  const entries = cartEntries();
+  const entries =
+    cartEntries();
 
   if(!entries.length){
+
     openCart();
+
     return;
   }
 
+
   if(
-    fulfilment==="delivery" &&
-    cartTotal()<2000
+    fulfilment === "delivery" &&
+    cartTotal() < 2000
   ){
 
     alert(
-      `Delivery orders have a ₹2,000 minimum. Please add ${money(2000-cartTotal())} more, or choose store pickup.`
+      `Delivery orders have a ₹2,000 minimum. Please add ${money(
+        2000 - cartTotal()
+      )} more, or choose store pickup.`
     );
 
     return;
   }
 
+
   const lines = [
     "*JK TRADERS — ORDER*",
     "",
     ...entries.map(
-      (x,i)=>
+      (x,i) =>
         `${i+1}. ${x.product.name} — ${x.product.size} × ${x.qty} = ${money(x.product.price*x.qty)}`
     ),
     "",
     `*Estimated total: ${money(cartTotal())}*`,
-    `Fulfilment: ${fulfilment==="delivery"?"Home delivery":"Store pickup"}`,
+    `Fulfilment: ${
+      fulfilment === "delivery"
+        ? "Home delivery"
+        : "Store pickup"
+    }`,
     "",
     "Please confirm availability, final price and delivery charges."
   ];
 
+
   window.open(
-    `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(lines.join("\n"))}`,
+    `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(
+      lines.join("\n")
+    )}`,
     "_blank",
     "noopener"
   );
+
 }
 
 
 $("search").addEventListener(
   "input",
-  ()=>{
+  () => {
+
     $("clearSearch").style.display =
       $("search").value
         ? "block"
         : "none";
 
     renderProducts();
+
   }
 );
 
 
-$("clearSearch").onclick = ()=>{
+$("clearSearch").onclick = () => {
+
   $("search").value = "";
-  $("clearSearch").style.display = "none";
+
+  $("clearSearch").style.display =
+    "none";
+
   renderProducts();
+
 };
 
 
@@ -1128,6 +1224,7 @@ $("closeCart").onclick =
 
 $("drawerBackdrop").onclick =
   closeCart;
+
 
 $("categoryHeaderBtn").onclick =
   openCategories;
@@ -1148,7 +1245,7 @@ $("categoryBackdrop").onclick =
   closeCategories;
 
 
-$("resetFilters").onclick = ()=>{
+$("resetFilters").onclick = () => {
 
   selectedCategory = "All";
 
@@ -1159,6 +1256,7 @@ $("resetFilters").onclick = ()=>{
 
   renderCategories();
   renderProducts();
+
 };
 
 
@@ -1167,9 +1265,11 @@ $("whatsappOrder").onclick =
 
 
 document
-  .querySelectorAll(".fulfilment-option")
-  .forEach(b=>
-    b.onclick=()=>{
+  .querySelectorAll(
+    ".fulfilment-option"
+  )
+  .forEach(b =>
+    b.onclick = () => {
 
       fulfilment =
         b.dataset.fulfilment;
@@ -1178,22 +1278,31 @@ document
         .querySelectorAll(
           ".fulfilment-option"
         )
-        .forEach(x=>
-          x.classList.remove("selected")
+        .forEach(x =>
+          x.classList.remove(
+            "selected"
+          )
         );
 
-      b.classList.add("selected");
+      b.classList.add(
+        "selected"
+      );
+
     }
   );
 
 
 document.addEventListener(
   "keydown",
-  e=>{
-    if(e.key==="Escape"){
+  e => {
+
+    if(e.key === "Escape"){
+
       closeCart();
       closeCategories();
+
     }
+
   }
 );
 
