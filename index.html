@@ -2,159 +2,91 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="JK Traders - groceries, provisions, homemade products and more. Bengaluru-wide delivery and store pickup.">
-  <title>JK Traders | Groceries & Provisions, Bengaluru</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="JK Traders — groceries, provisions and everyday essentials in Banashankari, Bengaluru.">
+  <title>JK Traders | Groceries & Provisions</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="topbar">Bengaluru-wide delivery • Minimum order ₹2,000 • Store pickup available</div>
+  <div class="announcement"><span>🚚 Bengaluru delivery</span><b>₹2,000 minimum order</b><span>•</span><span>Store pickup available</span><span class="announcement-help">Need help? <a href="tel:+919880079461">Call 98800 79461</a></span></div>
 
-  <header class="header">
-    <a class="brand" href="#home" aria-label="JK Traders home">
+  <header class="site-header">
+    <a class="brand" href="#top" aria-label="JK Traders home">
       <span class="brand-mark">JK</span>
-      <span><strong>JK Traders</strong><small>Groceries • Provisions • More</small></span>
+      <span class="brand-copy"><strong>JK Traders</strong><small>GROCERIES • PROVISIONS • MORE</small></span>
     </a>
-    <nav>
-      <a href="#shop">Shop</a>
-      <a href="#categories">Categories</a>
-      <a href="#about">About</a>
-      <a href="#contact">Contact</a>
-    </nav>
+
+    <div class="search-wrap">
+      <span class="search-icon">⌕</span>
+      <input id="search" type="search" placeholder="Search for rice, flour, snacks, oil..." autocomplete="off" aria-label="Search products">
+      <button id="clearSearch" class="clear-search" aria-label="Clear search">×</button>
+    </div>
+
     <div class="header-actions">
-      <a class="call" href="tel:+919880079461">Call</a>
-      <button class="cart-btn" id="cartBtn">Cart <span id="cartCount">0</span></button>
+      <button class="category-header-btn" id="categoryHeaderBtn"><span>▦</span> Categories <span>⌄</span></button>
+      <a class="call-btn" href="tel:+919880079461">☎ <span>Call</span></a>
+      <button class="cart-header-btn" id="cartBtn">🛒 <span>Cart</span><b id="cartCount">0</b></button>
     </div>
   </header>
 
-  <main id="home">
-    <section class="hero">
-      <div class="hero-copy">
-        <p class="eyebrow">YOUR EVERYDAY STORE IN BANASHANKARI</p>
-        <h1>Everything your kitchen needs, <em>under one roof.</em></h1>
-        <p class="hero-text">Your friendly neighbourhood store for groceries, provisions, homemade favourites and everyday essentials. Come by, call us, or send your basket on WhatsApp.</p>
-        <div class="hero-actions">
-          <a class="btn primary" href="#shop">Shop products</a>
-          <a class="btn whatsapp" id="heroWhatsapp" target="_blank" rel="noopener">Order on WhatsApp</a>
+  <main id="top">
+    <section class="category-bar" id="categoryBar" aria-label="Shop by category">
+      <div class="category-inner">
+        <button class="category-tile active" data-category="All"><span class="category-icon">🛍️</span><strong>All products</strong></button>
+        <div id="categoryTiles" class="category-tiles"></div>
+        <button class="category-tile more" id="moreCategories"><span class="category-icon">•••</span><strong>View all</strong></button>
+      </div>
+    </section>
+
+    <section class="shop-shell">
+      <div class="store-strip">
+        <span>✓ Fresh stock</span><span>✓ Fair prices</span><span>✓ Easy WhatsApp ordering</span><span>✓ Banashankari store pickup</span>
+      </div>
+
+      <section class="shop-head">
+        <div>
+          <p class="eyebrow">JK TRADERS</p>
+          <h1 id="pageTitle">Shop groceries</h1>
+          <p id="resultMeta" class="result-meta">Loading products...</p>
         </div>
-        <div class="trust-row">
-          <span>✓ Wide product range</span>
-          <span>✓ Easy WhatsApp ordering</span>
-          <span>✓ Bengaluru delivery</span>
+        <div class="shop-controls">
+          <button id="mobileCategoryBtn" class="mobile-category-btn">☰ Categories</button>
+          <label class="sort-label">Sort <select id="sortSelect"><option value="featured">Featured</option><option value="name">Name A–Z</option><option value="price-low">Price: low to high</option><option value="price-high">Price: high to low</option></select></label>
         </div>
-      </div>
-      <div class="hero-card">
-        <div class="hero-card-inner">
-          <span class="mini-label">JK TRADERS</span>
-          <h2>Fresh stock.<br>Fair prices.<br>Friendly service.</h2>
-          <p>43/A, 1st Main, Nagendra Block, SBM Colony, Banashankari Stage 1</p>
-          <a href="#contact">Visit the store →</a>
-        </div>
+      </section>
+
+      <section id="productGrid" class="product-grid" aria-live="polite"></section>
+      <div id="emptyState" class="empty-state" hidden>
+        <div>🔎</div><h2>No products found</h2><p>Try another search or choose a different category.</p><button id="resetFilters" class="outline-btn">Show all products</button>
       </div>
     </section>
 
-    <section class="feature-strip">
-      <div><b>₹2,000+</b><span>Minimum delivery order</span></div>
-      <div><b>3–4 km+</b><span>Delivery charge may apply</span></div>
-      <div><b>Bengaluru</b><span>Wide delivery coverage</span></div>
-      <div><b>Pickup</b><span>Collect from our store</span></div>
+    <section class="popular-section">
+      <div class="section-title"><div><p class="eyebrow">QUICK PICKS</p><h2>Popular at JK Traders</h2></div><button class="text-link" data-category="All">View all →</button></div>
+      <div id="popularGrid" class="mini-product-grid"></div>
     </section>
 
-    <section id="categories" class="section">
-      <div class="section-head">
-        <div><p class="eyebrow">FROM OUR SHELVES TO YOUR HOME</p><h2>All the everyday things you know and love.</h2></div>
-      </div>
-      <div class="category-grid" id="categoryGrid"></div>
-    </section>
-
-    <section id="shop" class="section shop-section">
-      <div class="section-head shop-head">
-        <div><p class="eyebrow">A FEW FAVOURITES</p><h2>Shop a little, stock up a lot.</h2></div>
-        <div class="shop-tools">
-          <input id="search" type="search" placeholder="Search products..." aria-label="Search products">
-          <select id="categoryFilter" aria-label="Filter by category"><option value="All">All categories</option></select>
-        </div>
-      </div>
-      <div class="product-grid" id="productGrid"></div>
-    </section>
-
-    <section class="order-banner">
-      <div>
-        <p class="eyebrow">QUICK & EASY</p>
-        <h2>Build your basket. Send it on WhatsApp.</h2>
-        <p>Add products to your cart and we'll prepare a ready-to-send WhatsApp order with the items and quantities.</p>
-      </div>
-      <button class="btn light" id="bannerCart">View cart</button>
-    </section>
-
-    <section id="about" class="section about">
-      <div class="about-image"><span>JK</span></div>
-      <div>
-        <p class="eyebrow">ABOUT JK TRADERS</p>
-        <h2>Your neighbourhood store, built around convenience.</h2>
-        <p>We are your local, everyday store in Banashankari — a place to pick up the things you need for home, discover a few favourites, and get friendly service along the way.</p>
-        <div class="check-list">
-          <span>✓ Wide selection of groceries & provisions</span>
-          <span>✓ Bengaluru-wide delivery</span>
-          <span>✓ Store pickup available</span>
-          <span>✓ Simple WhatsApp ordering</span>
-        </div>
-      </div>
-    </section>
-
-    <section class="section delivery">
+    <section class="delivery-section">
       <div class="delivery-card">
-        <p class="eyebrow">DELIVERY & PICKUP</p>
-        <h2>We make the last mile simple.</h2>
-        <div class="delivery-cols">
-          <div><strong>Delivery</strong><p>Minimum order ₹2,000. Orders farther than roughly 3–4 km may have a delivery charge to cover fuel.</p></div>
-          <div><strong>Pickup</strong><p>Place your order on WhatsApp and collect it from our Banashankari store.</p></div>
-        </div>
-      </div>
-    </section>
-
-    <section id="contact" class="section contact">
-      <div>
-        <p class="eyebrow">FIND US</p>
-        <h2>Come say hello.</h2>
-        <p>43/A, 1st Main, Nagendra Block, SBM Colony, Banashankari Stage 1, Bengaluru</p>
-        <div class="contact-links">
-          <a href="tel:+919880079461">98800 79461</a>
-          <a href="tel:+916366013772">63660 13772</a>
-          <a href="mailto:sagarsuresh1123@gmail.com">sagarsuresh1123@gmail.com</a>
-        </div>
-        <a class="btn primary" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=43%2FA%201st%20Main%20Nagendra%20Block%20SBM%20Colony%20Banashankari%20Stage%201%20Bengaluru">Get directions</a>
-      </div>
-      <div class="map-placeholder">
-        <div><span>📍</span><b>JK Traders</b><small>Banashankari Stage 1, Bengaluru</small></div>
+        <div><p class="eyebrow">DELIVERY & PICKUP</p><h2>Simple ordering. No complicated checkout.</h2><p>Add what you need, review your basket, then send the complete order to us on WhatsApp. We'll confirm availability, final prices and delivery charges with you.</p></div>
+        <div class="delivery-options"><div><b>🚚 Home delivery</b><span>₹2,000 minimum • Bengaluru</span></div><div><b>🏪 Store pickup</b><span>Banashankari Stage 1</span></div></div>
       </div>
     </section>
   </main>
 
-  <footer>
-    <div class="footer-brand"><span class="brand-mark">JK</span><b>JK Traders</b></div>
-    <p>Groceries • Provisions • Homemade favourites • Everyday essentials</p>
-    <small>© 2026 JK Traders. All rights reserved. · <a href="admin.html">Catalogue Manager</a></small>
-  </footer>
+  <footer><div class="footer-brand"><span class="brand-mark">JK</span><div><b>JK Traders</b><small>Groceries • Provisions • More</small></div></div><div><b>43/A, 1st Main, Nagendra Block, SBM Colony, Banashankari Stage 1</b><p>Bengaluru • <a href="tel:+919880079461">98800 79461</a> • <a href="tel:+916366013772">63660 13772</a></p></div><a href="admin.html">Catalogue Manager</a></footer>
 
-  <div class="cart-drawer" id="cartDrawer" aria-hidden="true">
-    <div class="drawer-backdrop" id="drawerBackdrop"></div>
-    <aside class="drawer">
-      <div class="drawer-head"><h2>Your order</h2><button id="closeCart">×</button></div>
-      <div id="cartItems" class="cart-items"></div>
-      <div class="cart-footer">
-        <div class="cart-total"><span>Estimated total</span><strong id="cartTotal">₹0</strong></div>
-        <p class="cart-note">Final availability, price and delivery charge will be confirmed on WhatsApp.</p>
-        <button class="btn whatsapp full" id="whatsappOrder">Send order on WhatsApp</button>
-      </div>
-    </aside>
-  </div>
+  <div class="mobile-bottom" id="mobileBottom"><button id="mobileBottomCategories">☰ Categories</button><button id="mobileBottomCart">🛒 <span id="mobileBottomCount">0</span> items • <b id="mobileBottomTotal">₹0</b></button></div>
+
+  <div class="category-modal" id="categoryModal" aria-hidden="true"><div class="modal-backdrop" id="categoryBackdrop"></div><aside class="category-panel"><div class="panel-head"><h2>Shop by category</h2><button id="closeCategories">×</button></div><div id="categoryList" class="category-list"></div></aside></div>
+
+  <div class="cart-drawer" id="cartDrawer" aria-hidden="true"><div class="drawer-backdrop" id="drawerBackdrop"></div><aside class="cart-panel"><div class="panel-head"><div><h2>Your cart</h2><p id="cartSubhead">0 items</p></div><button id="closeCart">×</button></div><div id="cartItems" class="cart-items"></div><div class="cart-footer"><div id="deliveryProgress" class="delivery-progress"></div><div class="fulfilment"><b>Fulfilment</b><button class="fulfilment-option selected" data-fulfilment="delivery"><span>🚚</span><span><strong>Home delivery</strong><small>Bengaluru • ₹2,000 minimum</small></span></button><button class="fulfilment-option" data-fulfilment="pickup"><span>🏪</span><span><strong>Store pickup</strong><small>Banashankari Stage 1</small></span></button></div><div class="total-row"><span>Estimated total</span><strong id="cartTotal">₹0</strong></div><button id="whatsappOrder" class="whatsapp-btn">◉ &nbsp; Send order on WhatsApp</button><p class="cart-note">We'll confirm availability, final price and delivery charge on WhatsApp.</p></div></aside></div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="supabase-config.js"></script>
-<script src="script.js"></script>
+  <script src="supabase-config.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
