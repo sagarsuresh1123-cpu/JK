@@ -10,135 +10,23 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <style>
-    .how-to-order{max-width:1500px;margin:0 auto;padding:28px 4% 42px}
-    .how-to-order-card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:28px;box-shadow:var(--shadow)}
-    .how-to-order-head{text-align:center;max-width:850px;margin:0 auto 24px}
-    .how-to-order-head h2{font-family:"Playfair Display";font-size:32px;margin:0 0 8px}
-    .how-to-order-head p{margin:0;color:var(--muted);line-height:1.6;font-size:14px}
-    .order-flow{display:grid;grid-template-columns:1fr 40px 1fr 40px 1fr 40px 1fr;gap:10px;align-items:stretch}
-    .order-step{border:1px solid var(--line);border-radius:14px;background:#fffaf5;padding:20px 17px;min-height:185px}
-    .order-step-number{width:32px;height:32px;border-radius:50%;background:var(--terra);color:#fff;display:grid;place-items:center;font-weight:700;margin-bottom:12px}
-    .order-step h3{font-family:"Playfair Display";font-size:20px;margin:0 0 8px}
-    .order-step p{font-size:12px;color:var(--muted);line-height:1.55;margin:0}
-    .order-arrow{display:grid;place-items:center;color:var(--terra);font-size:25px;font-weight:700}
-    .order-note{margin:18px 0 0;padding:14px 16px;border-radius:11px;background:#fff5e9;color:#765b48;font-size:12px;line-height:1.55;text-align:center}
-    @media(max-width:900px){.order-flow{grid-template-columns:1fr 28px 1fr;}.order-flow .order-step:nth-of-type(5){grid-column:1}.order-flow .order-step:nth-of-type(7){grid-column:3}.order-arrow:nth-of-type(2){grid-column:2;grid-row:1}.order-arrow:nth-of-type(4){grid-column:2;grid-row:2}.order-arrow:nth-of-type(6){grid-column:2;grid-row:3}.how-to-order-card{padding:20px}.how-to-order-head h2{font-size:28px}}
-    @media(max-width:600px){.how-to-order{padding:20px 15px 30px}.order-flow{display:flex;flex-direction:column}.order-arrow{transform:rotate(90deg);height:18px}.order-step{min-height:0;padding:17px}.order-step h3{font-size:18px}.how-to-order-head p{font-size:13px}}
+    .how-to-order{max-width:1500px;margin:0 auto;padding:28px 4% 42px}.how-to-order-card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:28px;box-shadow:var(--shadow)}.how-to-order-head{text-align:center;max-width:850px;margin:0 auto 24px}.how-to-order-head h2{font-family:"Playfair Display";font-size:32px;margin:0 0 8px}.how-to-order-head p{margin:0;color:var(--muted);line-height:1.6;font-size:14px}.order-flow{display:grid;grid-template-columns:1fr 40px 1fr 40px 1fr 40px 1fr;gap:10px;align-items:stretch}.order-step{border:1px solid var(--line);border-radius:14px;background:#fffaf5;padding:20px 17px;min-height:185px}.order-step-number{width:32px;height:32px;border-radius:50%;background:var(--terra);color:#fff;display:grid;place-items:center;font-weight:700;margin-bottom:12px}.order-step h3{font-family:"Playfair Display";font-size:20px;margin:0 0 8px}.order-step p{font-size:12px;color:var(--muted);line-height:1.55;margin:0}.order-arrow{display:grid;place-items:center;color:var(--terra);font-size:25px;font-weight:700}.order-note{margin:18px 0 0;padding:14px 16px;border-radius:11px;background:#fff5e9;color:#765b48;font-size:12px;line-height:1.55;text-align:center}@media(max-width:900px){.order-flow{grid-template-columns:1fr 28px 1fr}.order-flow .order-step:nth-of-type(5){grid-column:1}.order-flow .order-step:nth-of-type(7){grid-column:3}.order-arrow:nth-of-type(2){grid-column:2;grid-row:1}.order-arrow:nth-of-type(4){grid-column:2;grid-row:2}.order-arrow:nth-of-type(6){grid-column:2;grid-row:3}.how-to-order-card{padding:20px}.how-to-order-head h2{font-size:28px}}@media(max-width:600px){.how-to-order{padding:20px 15px 30px}.order-flow{display:flex;flex-direction:column}.order-arrow{transform:rotate(90deg);height:18px}.order-step{min-height:0;padding:17px}.order-step h3{font-size:18px}.how-to-order-head p{font-size:13px}}
   </style>
 </head>
 <body>
   <div class="announcement"><span>🚚 Bengaluru delivery</span><span>•</span><span>Store pickup available</span><span class="announcement-help">Need help? <a href="tel:+919880079461">Call 98800 79461</a></span></div>
-
-  <header class="site-header">
-    <a class="brand" href="#top" aria-label="JK Traders home">
-      <span class="brand-mark">JK</span>
-      <span class="brand-copy"><strong>JK Traders</strong><small>GROCERIES • PROVISIONS • MORE</small></span>
-    </a>
-
-    <div class="search-wrap">
-      <span class="search-icon">⌕</span>
-      <input id="search" type="search" placeholder="Search for rice, flour, snacks, oil..." autocomplete="off" aria-label="Search products">
-      <button id="clearSearch" class="clear-search" aria-label="Clear search">×</button>
-    </div>
-
-    <div class="header-actions">
-      <button class="category-header-btn" id="categoryHeaderBtn"><span>▦</span> Categories <span>⌄</span></button>
-      <a class="call-btn" href="tel:+919880079461">☎ <span>Call</span></a>
-      <button class="cart-header-btn" id="cartBtn">🛒 <span>Cart</span><b id="cartCount">0</b></button>
-    </div>
-  </header>
-
+  <header class="site-header"><a class="brand" href="#top" aria-label="JK Traders home"><span class="brand-mark">JK</span><span class="brand-copy"><strong>JK Traders</strong><small>GROCERIES • PROVISIONS • MORE</small></span></a><div class="search-wrap"><span class="search-icon">⌕</span><input id="search" type="search" placeholder="Search for rice, flour, snacks, oil..." autocomplete="off" aria-label="Search products"><button id="clearSearch" class="clear-search" aria-label="Clear search">×</button></div><div class="header-actions"><button class="category-header-btn" id="categoryHeaderBtn"><span>▦</span> Categories <span>⌄</span></button><a class="call-btn" href="tel:+919880079461">☎ <span>Call</span></a><button class="cart-header-btn" id="cartBtn">🛒 <span>Cart</span><b id="cartCount">0</b></button></div></header>
   <main id="top">
-    <section class="category-bar" id="categoryBar" aria-label="Shop by category">
-      <div class="category-inner">
-        <button class="category-tile active" data-category="All"><span class="category-icon">🛍️</span><strong>All products</strong></button>
-        <div id="categoryTiles" class="category-tiles"></div>
-        <button class="category-tile more" id="moreCategories"><span class="category-icon">•••</span><strong>View all</strong></button>
-      </div>
-    </section>
-
-    <section class="how-to-order" aria-labelledby="howToOrderTitle">
-      <div class="how-to-order-card">
-        <div class="how-to-order-head">
-          <p class="eyebrow">HOW TO ORDER</p>
-          <h2 id="howToOrderTitle">Simple ordering, with final prices confirmed by our associate</h2>
-          <p>Choose what you need, send your basket on WhatsApp, and we'll call you to confirm availability, quantities and current prices before placing the order.</p>
-        </div>
-        <div class="order-flow">
-          <article class="order-step">
-            <div class="order-step-number">1</div>
-            <h3>Choose Your Items</h3>
-            <p>Browse and select from our wide range of products – everyday essentials, branded items, detergents, and our exclusive homemade items like papads, etc.</p>
-          </article>
-          <div class="order-arrow" aria-hidden="true">→</div>
-          <article class="order-step">
-            <div class="order-step-number">2</div>
-            <h3>Add to Cart</h3>
-            <p>Select all the items you need and add them to your cart.</p>
-          </article>
-          <div class="order-arrow" aria-hidden="true">→</div>
-          <article class="order-step">
-            <div class="order-step-number">3</div>
-            <h3>Send Your Order on WhatsApp</h3>
-            <p>Review your cart and send your order to us directly on WhatsApp.</p>
-          </article>
-          <div class="order-arrow" aria-hidden="true">→</div>
-          <article class="order-step">
-            <div class="order-step-number">4</div>
-            <h3>Confirm &amp; Place Your Order</h3>
-            <p>Our associate will give you a call to confirm the items, quantities and current prices. Once confirmed, your order will be placed.</p>
-          </article>
-        </div>
-        <div class="order-note"><strong>Prices may vary based on availability and other factors.</strong> Our associate will confirm the final price with you over a call before placing the order.</div>
-      </div>
-    </section>
-
-    <section class="shop-shell">
-      <div class="store-strip">
-        <span>✓ Fresh stock</span><span>✓ Current prices confirmed by phone</span><span>✓ Easy WhatsApp ordering</span><span>✓ Banashankari store pickup</span>
-      </div>
-
-      <section class="shop-head">
-        <div>
-          <p class="eyebrow">JK TRADERS</p>
-          <h1 id="pageTitle">Shop groceries</h1>
-          <p id="resultMeta" class="result-meta">Loading products...</p>
-        </div>
-        <div class="shop-controls">
-          <button id="mobileCategoryBtn" class="mobile-category-btn">☰ Categories</button>
-          <label class="sort-label">Sort <select id="sortSelect"><option value="featured">Featured</option><option value="name">Name A–Z</option></select></label>
-        </div>
-      </section>
-
-      <section id="productGrid" class="product-grid" aria-live="polite"></section>
-      <div id="emptyState" class="empty-state" hidden>
-        <div>🔎</div><h2>No products found</h2><p>Try another search or choose a different category.</p><button id="resetFilters" class="outline-btn">Show all products</button>
-      </div>
-    </section>
-
-    <section class="popular-section">
-      <div class="section-title"><div><p class="eyebrow">QUICK PICKS</p><h2>Popular at JK Traders</h2></div><button class="text-link" data-category="All">View all →</button></div>
-      <div id="popularGrid" class="mini-product-grid"></div>
-    </section>
-
-    <section class="delivery-section">
-      <div class="delivery-card">
-        <div><p class="eyebrow">DELIVERY & PICKUP</p><h2>Simple ordering. No complicated checkout.</h2><p>Add what you need, review your basket, then send the complete order to us on WhatsApp. Our associate will call to confirm availability, quantities, current prices and delivery charges before the order is placed.</p></div>
-        <div class="delivery-options"><div><b>🚚 Home delivery</b><span>Bengaluru</span></div><div><b>🏪 Store pickup</b><span>Banashankari Stage 1</span></div></div>
-      </div>
-    </section>
+    <section class="category-bar" id="categoryBar" aria-label="Shop by category"><div class="category-inner"><button class="category-tile active" data-category="All"><span class="category-icon">🛍️</span><strong>All products</strong></button><div id="categoryTiles" class="category-tiles"></div><button class="category-tile more" id="moreCategories"><span class="category-icon">•••</span><strong>View all</strong></button></div></section>
+    <section class="how-to-order" aria-labelledby="howToOrderTitle"><div class="how-to-order-card"><div class="how-to-order-head"><p class="eyebrow">HOW TO ORDER</p><h2 id="howToOrderTitle">Simple ordering, with final prices confirmed by our associate</h2><p>Choose what you need, send your basket on WhatsApp, and we'll call you to confirm availability, quantities and current prices before placing the order.</p></div><div class="order-flow"><article class="order-step"><div class="order-step-number">1</div><h3>Choose Your Items</h3><p>Browse and select from our wide range of products – everyday essentials, branded items, detergents, and our exclusive homemade items like papads, etc.</p></article><div class="order-arrow" aria-hidden="true">→</div><article class="order-step"><div class="order-step-number">2</div><h3>Add to Cart</h3><p>Select all the items you need and add them to your cart.</p></article><div class="order-arrow" aria-hidden="true">→</div><article class="order-step"><div class="order-step-number">3</div><h3>Send Your Order on WhatsApp</h3><p>Review your cart and send your order to us directly on WhatsApp.</p></article><div class="order-arrow" aria-hidden="true">→</div><article class="order-step"><div class="order-step-number">4</div><h3>Confirm &amp; Place Your Order</h3><p>Our associate will give you a call to confirm the items, quantities and current prices. Once confirmed, your order will be placed.</p></article></div><div class="order-note"><strong>Prices may vary based on availability and other factors.</strong> Our associate will confirm the final price with you over a call before placing the order.</div></div></section>
+    <section class="shop-shell"><div class="store-strip"><span>✓ Fresh stock</span><span>✓ Current prices confirmed by phone</span><span>✓ Easy WhatsApp ordering</span><span>✓ Banashankari store pickup</span></div><section class="shop-head"><div><p class="eyebrow">JK TRADERS</p><h1 id="pageTitle">Shop groceries</h1><p id="resultMeta" class="result-meta">Loading products...</p></div><div class="shop-controls"><button id="mobileCategoryBtn" class="mobile-category-btn">☰ Categories</button><label class="sort-label">Sort <select id="sortSelect"><option value="featured">Featured</option><option value="name">Name A–Z</option></select></label></div></section><section id="productGrid" class="product-grid" aria-live="polite"></section><div id="emptyState" class="empty-state" hidden><div>🔎</div><h2>No products found</h2><p>Try another search or choose a different category.</p><button id="resetFilters" class="outline-btn">Show all products</button></div></section>
+    <section class="popular-section"><div class="section-title"><div><p class="eyebrow">QUICK PICKS</p><h2>Popular at JK Traders</h2></div><button class="text-link" data-category="All">View all →</button></div><div id="popularGrid" class="mini-product-grid"></div></section>
+    <section class="delivery-section"><div class="delivery-card"><div><p class="eyebrow">DELIVERY & PICKUP</p><h2>Simple ordering. No complicated checkout.</h2><p>Add what you need, review your basket, then send the complete order to us on WhatsApp. Our associate will call to confirm availability, quantities, current prices and delivery charges before the order is placed.</p></div><div class="delivery-options"><div><b>🚚 Home delivery</b><span>Bengaluru</span></div><div><b>🏪 Store pickup</b><span>Banashankari Stage 1</span></div></div></div></section>
   </main>
-
   <footer><div class="footer-brand"><span class="brand-mark">JK</span><div><b>JK Traders</b><small>Groceries • Provisions • More</small></div></div><div><b>43/A, 1st Main, Nagendra Block, SBM Colony, Banashankari Stage 1</b><p>Bengaluru • <a href="tel:+919880079461">98800 79461</a> • <a href="tel:+916366013772">63660 13772</a></p></div><a href="admin.html">Catalogue Manager</a></footer>
-
   <div class="mobile-bottom" id="mobileBottom"><button id="mobileBottomCategories">☰ Categories</button><button id="mobileBottomCart">🛒 <span id="mobileBottomCount">0</span> items • <b id="mobileBottomTotal">Review</b></button></div>
-
   <div class="category-modal" id="categoryModal" aria-hidden="true"><div class="modal-backdrop" id="categoryBackdrop"></div><aside class="category-panel"><div class="panel-head"><h2>Shop by category</h2><button id="closeCategories">×</button></div><div id="categoryList" class="category-list"></div></aside></div>
-
   <div class="cart-drawer" id="cartDrawer" aria-hidden="true"><div class="drawer-backdrop" id="drawerBackdrop"></div><aside class="cart-panel"><div class="panel-head"><div><h2>Your cart</h2><p id="cartSubhead">0 items</p></div><button id="closeCart">×</button></div><div id="cartItems" class="cart-items"></div><div class="cart-footer"><div class="fulfilment"><b>Fulfilment</b><button class="fulfilment-option selected" data-fulfilment="delivery"><span>🚚</span><span><strong>Home delivery</strong><small>Bengaluru</small></span></button><button class="fulfilment-option" data-fulfilment="pickup"><span>🏪</span><span><strong>Store pickup</strong><small>Banashankari Stage 1</small></span></button></div><button id="whatsappOrder" class="whatsapp-btn">◉ &nbsp; Send order on WhatsApp</button><p class="cart-note">We'll call to confirm availability, quantities, current prices and delivery charges before placing your order.</p></div></aside></div>
-
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="supabase-config.js"></script>
-  <script src="script.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase-config.js"></script><script src="script-v2.js"></script>
 </body>
 </html>
