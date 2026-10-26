@@ -1,0 +1,22 @@
+/* ONLY fixes the nested product thumbnail inside the existing cart layout. */
+.cart-item .cart-item-visual .product-visual{
+  width:70px!important;
+  min-width:70px!important;
+  max-width:70px!important;
+  height:70px!important;
+  min-height:70px!important;
+  max-height:70px!important;
+  padding:0!important;
+  margin:0!important;
+  border-radius:9px!important;
+  overflow:hidden!important;
+  background:#fff!important;
+}
+.cart-item .cart-item-visual .product-visual img{
+  width:100%!important;
+  height:100%!important;
+  max-width:100%!important;
+  max-height:100%!important;
+  object-fit:contain!important;
+  display:block!important;
+}
